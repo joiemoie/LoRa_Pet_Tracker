@@ -32,6 +32,8 @@ int16_t gx, gy, gz;
 int count = 0;
 double double vx, vy, vz = 0;
 double dist_travelled = 0;
+double calories = 0;
+double weight = 20; // in pounds
 
 void setup() {
   // put your setup code here, to run once:
@@ -39,7 +41,7 @@ void setup() {
 
   while (!Serial);
   //Wire.begin();
-  
+
   // The accelerometer
   //accelgyro.initialize();
 
@@ -65,17 +67,20 @@ void loop() {
     vz = 0;
     dist_travelled = 0;
     LoRa.beginPacket();
-  
+
     LoRa.print("Distance Travlleled in One Hour: ");
     LoRa.println("dist_travelled");
+    LoRa.print("Calories Burned: ");
+    LoRa.println(calories);
     LoRa.endPacket();
-    
+
   }
   accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
   vx += ax / SAMPLE_RATE;
   vy += ay / SAMPLE_RATE;
   vz += gz / SAMPLE_RATE;
   dist_travelled += sqrt(vx * vx + vy * vy + vz * vz) / SAMPLE_RATE;
+  calories += pounds * dist_travelled * 0.000621371 * 0.75;
 
   //Serial.println(ax);
   /*
@@ -93,7 +98,7 @@ void loop() {
   }
   */
   LoRa.beginPacket();
-  
+
   LoRa.print("Pet Tracker");
 
   LoRa.endPacket();
