@@ -59,7 +59,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   unsigned long curr_time = millis();
-  if (curr_time == 1000 * 3600) {
+  if (curr_time - last_send > 1000 * 3600) {
 
     dist_travelled = 0;
     LoRa.beginPacket();
