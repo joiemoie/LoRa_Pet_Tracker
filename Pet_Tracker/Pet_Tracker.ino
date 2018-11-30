@@ -30,8 +30,9 @@ int16_t gx, gy, gz;
 #define SYNC_WORD         115
 #define SAMPLE_RATE       100
 int count = 0;
-int16_t vx, vy, vz = 0;
-int16_t dist_travelled = 0;
+double vx, vy, vz = 0;
+double real_ax, real_ay = 0;
+double dist_travelled = 0;
 double calories = 0;
 double weight = 20; // in pounds
 unsigned long last_send = 0;
@@ -78,17 +79,39 @@ void loop() {
 //    dist_travelled = 0;
 //  }
   accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-  vx += ax / SAMPLE_RATE;
-  vy += ay / SAMPLE_RATE;
-  vz += az / SAMPLE_RATE;
-  Serial.println("ax, ay, gz, dist_travelled");
-  Serial.println(ax);
-  Serial.println(ay);
-  Serial.println(az);
-  dist_travelled += sqrt(vx * vx + vy * vy + vz * vz) / SAMPLE_RATE;
+  real_ax = (double(ax) / SAMPLE_RATE) / 8192;
+  real_ay = (double(ay) / SAMPLE_RATE) / 8192;
+  Serial.println("real");
+  Serial.println(real_ax, 6);
+  Serial.println(real_ay, 6);
+  
+  if (sqrt(real_ax * real_ax + real_ay * real_ay) > 0.003) {
+    count = 0;
+  } else {
+    count += 1;
+  }
+  vx += (double(ax) / SAMPLE_RATE) / 8192;
+  vy += (double(ay) / SAMPLE_RATE) / 8192;
+  if (count > 100) {
+    vx = 0;
+    vy = 0;
+  }
+
+  Serial.println("ax, ay");
+  Serial.println(double(ax));
+  Serial.println(double(ay));
+  
+  Serial.println("vx, vy");
+  Serial.println(vx);
+  Serial.println(vy);
+
+  dist_travelled += sqrt(vx * vx + vy * vy) / SAMPLE_RATE;
+  Serial.println("dist_travelled");
   Serial.println(dist_travelled);
+  
   calories = weight * dist_travelled * 0.000621371 * 0.75;
 
+  delay(10);
   //Serial.println(ax);
   /*
   float latitude = 0.0 / 0.0;
