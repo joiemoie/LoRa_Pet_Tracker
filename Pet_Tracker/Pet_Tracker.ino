@@ -61,15 +61,13 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   unsigned long curr_time = millis();
-  if (curr_time == 1000 * 3600) {
-    vx = 0;
-    vy = 0;
-    vz = 0;
+  if (curr_time - last_send > 1000 * 3600) {
+
     dist_travelled = 0;
     LoRa.beginPacket();
 
     LoRa.print("Distance Travlleled in One Hour: ");
-    LoRa.println("dist_travelled");
+    LoRa.println(dist_travelled);
     LoRa.print("Calories Burned: ");
     LoRa.println(calories);
     LoRa.endPacket();
