@@ -28,22 +28,23 @@ int16_t gx, gy, gz;
 #define TX_POWER          6   // valid values are from 6 to 20
 #define SPREADING_FACTOR  10    // valid values are 7, 8, 9 or 10
 #define SYNC_WORD         115
-#define SAMPLE_RATE       0
+#define SAMPLE_RATE       100
 int count = 0;
-double double vx, vy, vz = 0;
-double dist_travelled = 0;
+int16_t vx, vy, vz = 0;
+int16_t dist_travelled = 0;
 double calories = 0;
 double weight = 20; // in pounds
+unsigned long last_send = 0;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
 
   while (!Serial);
-  //Wire.begin();
+  Wire.begin();
 
   // The accelerometer
-  //accelgyro.initialize();
+  accelgyro.initialize();
 
   // The GPS
   //ss.begin(GPSBaud);
@@ -55,33 +56,38 @@ void setup() {
   }
   else Serial.println("worked");
   //LoRa.setSyncWord(115);
-
+  last_send = millis();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   unsigned long curr_time = millis();
-  if (curr_time - last_send > 1000 * 10) {
-
-    LoRa.beginPacket();
-
-    LoRa.print("Distance Travlleled in One Hour: ");
-    LoRa.println(dist_travelled);
-    Serial.println("Distance");
-    Serial.println(dist_travelled);
-    LoRa.print("Calories Burned: ");
-    LoRa.println(calories);
-    Serial.println("Calories");
-    Serial.println(calories);
-    LoRa.endPacket();
-    dist_travelled = 0;
-  }
+//  if (curr_time - last_send > 1000 * 10) {
+//    last_send = curr_time;
+//    LoRa.beginPacket();
+//
+//    LoRa.print("Distance Travlleled in One Hour: ");
+//    LoRa.println(dist_travelled);
+//    Serial.println("Distance");
+//    Serial.println(dist_travelled);
+//    LoRa.print("Calories Burned: ");
+//    LoRa.println(calories);
+//    Serial.println("Calories");
+//    Serial.println(calories);
+//    LoRa.endPacket();
+//    dist_travelled = 0;
+//  }
   accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
   vx += ax / SAMPLE_RATE;
   vy += ay / SAMPLE_RATE;
-  vz += gz / SAMPLE_RATE;
+  vz += az / SAMPLE_RATE;
+  Serial.println("ax, ay, gz, dist_travelled");
+  Serial.println(ax);
+  Serial.println(ay);
+  Serial.println(az);
   dist_travelled += sqrt(vx * vx + vy * vy + vz * vz) / SAMPLE_RATE;
-  calories = pounds * dist_travelled * 0.000621371 * 0.75;
+  Serial.println(dist_travelled);
+  calories = weight * dist_travelled * 0.000621371 * 0.75;
 
   //Serial.println(ax);
   /*
@@ -98,16 +104,16 @@ void loop() {
     speed = gps.speed.kmph();
   }
   */
-  LoRa.beginPacket();
-
-  LoRa.print("Pet Tracker");
-
-  LoRa.endPacket();
-
-  if (curr_time - last_send > 10000){
-    Serial.println("Pet Tracker ");
-  }
-  last_send = millis();
+//  LoRa.beginPacket();
+//
+//  LoRa.print("Pet Tracker");
+//
+//  LoRa.endPacket();
+//
+//  if (curr_time - last_send > 10000){
+//    Serial.println("Pet Tracker ");
+//  }
+//  last_send = curr_time;
 
 
 
