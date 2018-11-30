@@ -28,7 +28,10 @@ int16_t gx, gy, gz;
 #define TX_POWER          6   // valid values are from 6 to 20
 #define SPREADING_FACTOR  10    // valid values are 7, 8, 9 or 10
 #define SYNC_WORD         115
+#define SAMPLE_RATE       0
 int count = 0;
+double double vx, vy, vz = 0;
+double dist_travelled = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -55,7 +58,24 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+  unsigned long curr_time = millis();
+  if (curr_time == 1000 * 3600) {
+    vx = 0;
+    vy = 0;
+    vz = 0;
+    dist_travelled = 0;
+    LoRa.beginPacket();
+  
+    LoRa.print("Distance Travlleled in One Hour: ");
+    LoRa.println("dist_travelled");
+    LoRa.endPacket();
+    
+  }
+  accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+  vx += ax / SAMPLE_RATE;
+  vy += ay / SAMPLE_RATE;
+  vz += gz / SAMPLE_RATE;
+  dist_travelled += sqrt(vx * vx + vy * vy + vz * vz) / SAMPLE_RATE;
 
   //Serial.println(ax);
   /*
@@ -78,18 +98,11 @@ void loop() {
 
   LoRa.endPacket();
 
-  /*
+  if (curr_time - last_send > 10000){
+    Serial.println("Pet Tracker ");
+  }
+  last_send = millis();
 
-  Serial.print("latitude:");
-  Serial.println(latitude, 8);
- 
-  Serial.print("longitude:");
-  Serial.println(longitude, 8);
-  */
-  Serial.print("Pet Tracker ");
-  Serial.println(count);
-  count++;
 
-  delay(2000);
 
 }
