@@ -85,7 +85,7 @@ void loop() {
 //  Serial.println(real_ax, 6);
 //  Serial.println(real_ay, 6);
   
-  if (sqrt(real_ax * real_ax + real_ay * real_ay) > 0.003) {
+  if (sqrt(real_ax * real_ax + real_ay * real_ay) > 0.005) {
     count = 0;
   } else {
     count += 1;
