@@ -77,7 +77,7 @@ void loop() {
   vy += ay / SAMPLE_RATE;
   vz += gz / SAMPLE_RATE;
   dist_travelled += sqrt(vx * vx + vy * vy + vz * vz) / SAMPLE_RATE;
-  calories += pounds * dist_travelled * 0.000621371 * 0.75;
+  calories = pounds * dist_travelled * 0.000621371 * 0.75;
 
   //Serial.println(ax);
   /*
