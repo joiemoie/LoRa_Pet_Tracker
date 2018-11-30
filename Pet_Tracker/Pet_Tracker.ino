@@ -61,14 +61,18 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   unsigned long curr_time = millis();
-  if (curr_time - last_send > 1000 * 3600) {
+  if (curr_time - last_send > 1000 * 10) {
 
     LoRa.beginPacket();
 
     LoRa.print("Distance Travlleled in One Hour: ");
     LoRa.println(dist_travelled);
+    Serial.println("Distance");
+    Serial.println(dist_travelled);
     LoRa.print("Calories Burned: ");
     LoRa.println(calories);
+    Serial.println("Calories");
+    Serial.println(calories);
     LoRa.endPacket();
     dist_travelled = 0;
   }
