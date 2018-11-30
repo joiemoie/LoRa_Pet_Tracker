@@ -63,7 +63,6 @@ void loop() {
   unsigned long curr_time = millis();
   if (curr_time - last_send > 1000 * 3600) {
 
-    dist_travelled = 0;
     LoRa.beginPacket();
 
     LoRa.print("Distance Travlleled in One Hour: ");
@@ -71,7 +70,7 @@ void loop() {
     LoRa.print("Calories Burned: ");
     LoRa.println(calories);
     LoRa.endPacket();
-
+    dist_travelled = 0;
   }
   accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
   vx += ax / SAMPLE_RATE;
