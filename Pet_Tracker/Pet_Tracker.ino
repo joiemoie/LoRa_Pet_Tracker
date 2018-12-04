@@ -101,9 +101,10 @@ void loop() {
   calories = weight * dist_travelled * 0.000621371 * 0.75;
 
   //Serial.println(ax);
+
   
-  float latitude = 0.0 / 0.0;
-  float longitude = 0.0 / 0.0;
+  float latitude = 37.410403;
+  float longitude = -122.059960;
   float speed = 0.0 / 0.0;
   while (ss.available()){
     gps.encode(ss.read());
@@ -125,10 +126,10 @@ void loop() {
 
     LoRa.endPacket();
 
-    SerialUSB.print("Latitude: ");
-    SerialUSB.println(latitude);
-    SerialUSB.print("Longitude: ");
-    SerialUSB.println(longitude);
+    Serial.print("Latitude: ");
+    Serial.println(latitude);
+    Serial.print("Longitude: ");
+    Serial.println(longitude);
     
     LoRa.receive();
     delay(150);
@@ -140,12 +141,13 @@ void loop() {
     }
 
     if (strcmp(ans, "ACK") == 0){
-      SerialUSB.println("ACK");
+      Serial.println("ACK");
     }
       LoRa.idle();
     }
     
   }
+  
 
 
 }
